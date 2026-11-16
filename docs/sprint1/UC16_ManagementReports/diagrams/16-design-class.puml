@@ -1,0 +1,86 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam classBackgroundColor #EAF4F8
+title UC16 - Design Class Diagram\nVõ Tấn Tài - 524H0126
+
+class ManagementReportView <<boundary>> {
+  - selectedType: ReportType?
+  - selectedPeriod: Period?
+  - selectedScope: Scope?
+  + showPermittedOptions(options): void
+  + collectRequest(): ReportRequest
+  + showReport(report): void
+  + showNoData(filters): void
+  + showError(message): void
+}
+class ManagementReportController <<controller>> {
+  - accessPolicy: ReportAccessPolicy
+  - catalog: ReportDefinitionCatalog
+  - source: ReportSourceRepository
+  - aggregator: ReportAggregator
+  + listAvailableReports(actor): Result
+  + produceReport(actor, request): Result
+}
+class ReportAccessPolicy <<domain policy>> {
+  - permissionRules: PermissionRules
+  + permittedOptions(actor): ReportOptions
+  + canRead(actor, reportType, scope): Boolean
+}
+class ReportDefinition <<entity>> {
+  - type: ReportType
+  - metricRules: MetricRules
+  - eligibilityRules: EligibilityRules
+  - qualityRules: QualityRules
+  + validateRequest(request): ValidationResult
+  + eligible(record): Boolean
+  + evaluateQuality(records): DataStatus
+}
+class ReportAggregator <<domain service>> {
+  - definition: ReportDefinition
+  + aggregate(records, request): ManagementReport
+  + emptyResult(request): NoDataResult
+}
+class ManagementReport <<result>> {
+  - type: ReportType
+  - period: Period
+  - scope: Scope
+  - values: ReportValues
+  - dataStatus: DataStatus
+  - asOf: Timestamp?
+  + summary(): ReportSummary
+  + isComplete(): Boolean
+}
+class ReportDefinitionCatalog <<data access>> {
+  - definitions: DefinitionStore
+  + listAvailable(): ReportDefinitions
+  + find(type): ReportDefinition?
+}
+class ReportSourceRepository <<data access>> {
+  - dataSource: DataSource
+  + readEligible(request, definition): SourceRecords
+  + readStatus(request): DataStatus
+}
+
+ManagementReportView --> ManagementReportController : requests
+ManagementReportController --> ReportAccessPolicy : authorizes
+ManagementReportController --> ReportDefinitionCatalog : finds definition
+ManagementReportController --> ReportSourceRepository : reads only
+ManagementReportController --> ReportAggregator : generates
+ReportDefinitionCatalog --> ReportDefinition : stores
+ReportSourceRepository --> ReportDefinition : applies eligibility
+ReportAggregator --> ReportDefinition : uses rules
+ReportAggregator --> ManagementReport : creates
+ManagementReportView --> ManagementReport : displays
+
+note bottom of ReportDefinition
+  KPI, eligibility, period and quality rules:
+  Proposed / To Confirm (Q5 / A-05)
+end note
+note bottom of ReportSourceRepository
+  No writes to operational records
+end note
+@enduml
