@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+title UC16 - Produce Management Reports - SSD\nVõ Tấn Tài - 524H0126
+actor Manager
+participant "SaigonBite System" as System
+
+Manager -> System: listAvailableReports()
+alt authorized
+  System --> Manager: permittedReportTypesAndFilters
+else unauthorized
+  System --> Manager: accessDenied
+end
+
+Manager -> System: produceReport(reportType, period, scope)
+alt invalid filters or unauthorized scope
+  System --> Manager: validationError / accessDenied
+else retrieval or aggregation failure
+  System --> Manager: reportUnavailable(reason)
+else no eligible records
+  System --> Manager: noData(reportType, period, scope)
+else incomplete source data
+  System --> Manager: incompleteOrUnavailable(dataStatus)
+else valid and complete result
+  System --> Manager: report(values, type, period, scope, dataStatus)
+end
+
+note over Manager,System
+  Candidate types: sales, hub workload, delivery performance.
+  KPI formulas, period, access scope, and data-quality policy:
+  Proposed / To Confirm (Workbook Q5 / A-05).
+  Report generation is read-only.
+end note
+@enduml
