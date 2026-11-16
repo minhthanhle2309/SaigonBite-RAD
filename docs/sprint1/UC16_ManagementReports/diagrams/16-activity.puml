@@ -52,4 +52,5 @@ note right
   No operational source record is changed.
 end note
 stop
+footer AI-assisted draft; student review required before submission
 @enduml

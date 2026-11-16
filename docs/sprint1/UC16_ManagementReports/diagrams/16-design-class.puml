@@ -83,4 +83,5 @@ end note
 note bottom of ReportSourceRepository
   No writes to operational records
 end note
+footer AI-assisted draft; student review required before submission
 @enduml

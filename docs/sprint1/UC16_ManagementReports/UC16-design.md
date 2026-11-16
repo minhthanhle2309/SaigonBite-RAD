@@ -1,8 +1,9 @@
 # UC16 — Design Classes, CRC Cards, and Report Logic Review
 
 **Author:** Võ Tấn Tài — 524H0126
+**AI use:** AI-assisted draft; student review is required before submission. See the Team Workbook AI Usage Log.
 
-**Status:** Proposed design aligned with [UC16 specification](UC16.md). KPI, period, access and data-quality decisions remain **To Confirm** under workbook Q5/A-05.
+**Status:** Proposed design aligned with [UC16 specification](UC16.md). The official Case Study confirms the Manager and three report categories. KPI, period, access and data-quality decisions remain **To Confirm** under workbook Q5/A-05.
 
 ## Design classes
 
@@ -55,3 +56,7 @@
 | Successful report | Display values with type, period, scope and data status; no operational mutation. | Source tables, KPI units and display format. |
 
 The existing shared domain model already contains `Order`, `Hub` and `Shipper` for UC07/UC10. UC16's read model should integrate with the eventual overall domain model without editing those team-owned diagrams in this phase. Export, report scheduling and stored report history are not included until confirmed.
+
+## Sprint 1 report template design evidence
+
+The [OOD sequence diagram](diagrams/16-ood-sequence.puml) traces authorization, definition lookup, filter checks, source read, no-data, quality and aggregation outcomes. The [final integrated design class diagram](diagrams/16-final-design-class.puml) adds a proposed `ReportResult` value object so the View can distinguish a complete report from no-data or an error. It retains read-only source access. Both sources have adjacent PNGs. The overall Order state machine is shared context; UC16 is a read-only use case and does not itself change an Order state.

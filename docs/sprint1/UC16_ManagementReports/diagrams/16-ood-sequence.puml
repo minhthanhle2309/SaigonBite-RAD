@@ -1,0 +1,76 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+title UC16 - OOD Sequence Diagram (Proposed)\nVõ Tấn Tài - 524H0126
+
+actor Manager
+boundary ManagementReportView as View
+control ManagementReportController as Controller
+entity ReportAccessPolicy as Access
+database ReportDefinitionCatalog as Catalog
+entity ReportDefinition as Definition
+database ReportSourceRepository as Source
+control ReportAggregator as Aggregator
+entity ManagementReport as Report
+
+Manager -> View : select report type, period and scope
+View -> Controller : produceReport(actor, request)
+Controller -> Access : canRead(actor, reportType, scope)
+Access --> Controller : authorized?
+alt unauthorized
+  Controller --> View : access denied
+  View --> Manager : showError()
+else authorized
+  Controller -> Catalog : find(reportType)
+  Catalog --> Controller : definition or unavailable
+  alt definition unavailable
+    Controller --> View : unsupported report
+    View --> Manager : showError()
+  else definition available
+    Controller -> Definition : validateRequest(request)
+    Definition --> Controller : valid or invalid filters
+    alt invalid filters
+      Controller --> View : validation error
+      View --> Manager : showError()
+    else valid filters
+      Controller -> Source : readEligible(request, definition)
+      Source --> Controller : source records or retrieval failure
+      alt retrieval failure
+        Controller --> View : report unavailable
+        View --> Manager : showError()
+      else records returned
+        alt no eligible records
+          Controller -> Aggregator : emptyResult(request)
+          Aggregator --> Controller : no-data result
+          Controller --> View : no-data result
+          View --> Manager : showNoData(filters)
+        else records present
+          Controller -> Definition : evaluateQuality(records)
+          Definition --> Controller : data status
+          alt insufficient quality under confirmed rule
+            Controller --> View : incomplete or unavailable
+            View --> Manager : showError() with data status
+          else acceptable quality
+            Controller -> Aggregator : aggregate(records, request)
+            Aggregator -> Report : create values and context
+            Report --> Aggregator : report
+            Aggregator --> Controller : report or calculation failure
+            Controller --> View : report or explicit error
+            View --> Manager : showReport() or showError()
+          end
+        end
+      end
+    end
+  end
+end
+
+note over Definition, Source
+  KPI formulas, eligibility, quality thresholds,
+  periods and scope permissions are To Confirm.
+  The source is read-only.
+end note
+footer AI-assisted draft; student review required before submission
+@enduml

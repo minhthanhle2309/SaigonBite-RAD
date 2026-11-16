@@ -34,4 +34,5 @@ note over Manager,System
   Proposed / To Confirm (Workbook Q5 / A-05).
   Report generation is read-only.
 end note
+footer AI-assisted draft; student review required before submission
 @enduml

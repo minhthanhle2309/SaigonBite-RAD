@@ -1,0 +1,90 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam classBackgroundColor #EAF4F8
+skinparam linetype ortho
+title UC16 - Final Integrated Design Class Diagram (Proposed)\nVõ Tấn Tài - 524H0126
+
+package "View" {
+  class ManagementReportView <<boundary>> {
+    - request: ReportRequest?
+    + submitRequest(request): void
+    + showResult(result: ReportResult): void
+  }
+}
+package "Controller" {
+  class ManagementReportController <<controller>> {
+    - accessPolicy: ReportAccessPolicy
+    - catalog: ReportDefinitionCatalog
+    - source: ReportSourceRepository
+    - aggregator: ReportAggregator
+    + listAvailableReports(actor): ReportOptions
+    + produceReport(actor, request): ReportResult
+  }
+}
+package "Domain" {
+  class ReportAccessPolicy <<policy>> {
+    + permittedOptions(actor): ReportOptions
+    + canRead(actor, reportType, scope): Boolean
+  }
+  class ReportDefinition <<entity>> {
+    - type: ReportType
+    - metricRules: MetricRules
+    - eligibilityRules: EligibilityRules
+    - qualityRules: QualityRules
+    + validateRequest(request): ValidationResult
+    + evaluateQuality(records): DataStatus
+  }
+  class ReportAggregator <<service>> {
+    + aggregate(records, request): ManagementReport
+    + emptyResult(request): ReportResult
+  }
+  class ManagementReport <<derived value>> {
+    - type: ReportType
+    - period: Period
+    - scope: Scope
+    - values: ReportValues
+    - dataStatus: DataStatus
+    - asOf: Timestamp?
+  }
+  class ReportResult <<value>> {
+    + status: ReportStatus
+    + report: ManagementReport?
+    + errorCode: ErrorCode?
+  }
+}
+package "Data Access" {
+  class ReportDefinitionCatalog <<catalog>> {
+    + listAvailable(): ReportDefinitions
+    + find(type): ReportDefinition?
+  }
+  class ReportSourceRepository <<read only>> {
+    + readEligible(request, definition): SourceRecords
+    + readStatus(request): DataStatus
+  }
+}
+
+ManagementReportView --> ManagementReportController : requests
+ManagementReportView --> ReportResult : displays
+ManagementReportController --> ReportAccessPolicy : checks
+ManagementReportController --> ReportDefinitionCatalog : looks up
+ManagementReportController --> ReportSourceRepository : reads
+ManagementReportController --> ReportAggregator : aggregates
+ManagementReportController --> ReportResult : returns
+ReportDefinitionCatalog --> ReportDefinition : supplies
+ReportAggregator --> ReportDefinition : uses rules
+ReportAggregator --> ManagementReport : creates
+ReportResult --> ManagementReport : contains when complete
+
+note bottom of ReportDefinition
+  KPI formula, period, eligibility and quality
+  rules remain To Confirm (Q5 / A-05).
+end note
+note bottom of ReportSourceRepository
+  No operational write method is defined.
+end note
+footer AI-assisted draft; student review required before submission
+@enduml
