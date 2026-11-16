@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Final Design Class Diagram\nUC10\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+class DeliveryView <<view>> {
++openDelivery(id: OrderId): DetailsResult
++confirmPickup(id: OrderId): Outcome
++confirmDelivery(id: OrderId, cash: Money [0..1]): Outcome
++reportFailure(id: OrderId, reason: String): Outcome
+}
+class DeliveryController <<controller>> {
+-currentScope: AccessScope
++openDelivery(id: OrderId): DetailsResult
++confirmPickup(id: OrderId): Outcome
++confirmDelivery(id: OrderId, cash: Money [0..1]): Outcome
++reportFailure(id: OrderId, reason: String): Outcome
+}
+class Order <<domain>> {
+-id: OrderId
+-status: OrderStatus
+-version: Integer
+-paymentMethod: PaymentMethod
+-totalDue: Money
+-cashCollected: Money [0..1]
+-failureReason: String [0..1]
++pickup(): Validation
++deliver(cash: Money [0..1]): Validation
++fail(reason: String): Validation
+}
+interface OrderRepository <<data access>> {
++findForShipper(id: OrderId, scope: AccessScope): Order [0..1]
++save(order: Order, expectedVersion: Integer): SaveResult
+}
+DeliveryView --> DeliveryController
+DeliveryController --> OrderRepository
+DeliveryController ..> Order
+OrderRepository ..> Order
+@enduml
+

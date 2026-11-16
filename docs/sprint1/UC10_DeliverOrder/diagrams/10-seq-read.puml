@@ -1,0 +1,36 @@
+@startuml
+hide footbox
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Object Sequence Diagram Open Delivery\nUC10\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+actor "Shipper" as A
+boundary ":DeliveryView" as V
+control ":DeliveryController" as C
+database ":OrderRepository" as R
+A -> V : openDelivery(id)
+V -> C : openDelivery(id)
+C -> R : findForShipper(id, currentScope)
+alt assigned order found
+R --> C : order
+alt Delivered or Failed
+C --> V : order ID and outcome only
+V --> A : show outcome
+else active delivery
+C --> V : OrderDetails
+V --> A : show delivery details
+end
+else order missing or out of scope
+R --> C : none
+C --> V : error
+V --> A : show error
+end
+@enduml
+

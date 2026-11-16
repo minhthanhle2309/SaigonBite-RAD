@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Layered Design Class Diagram\nUC10\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+!pragma layout smetana
+skinparam classAttributeIconSize 0
+class DeliveryView <<view>> {
+
+}
+class DeliveryController <<controller>> {
+
+}
+class Order <<domain>> {
+
+}
+interface OrderRepository <<data access>> {
+
+}
+DeliveryView --> DeliveryController
+DeliveryController --> OrderRepository
+DeliveryController ..> Order
+OrderRepository ..> Order
+@enduml
+
