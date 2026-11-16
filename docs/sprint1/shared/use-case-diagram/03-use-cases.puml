@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Order Fulfilment Use Case Diagram\nUC03 / UC04 / UC05 / UC06 / UC07 / UC08 / UC10 / UC12\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+left to right direction
+rectangle "«actor»\nCustomer" as C #EAF4F8
+rectangle "«actor»\nKitchen Staff" as K #EAF4F8
+rectangle "«actor»\nShipper" as S #EAF4F8
+rectangle "«actor»\nOffice Staff" as O #EAF4F8
+rectangle OFDH {
+usecase "UC03 Place Order" as U3
+usecase "UC04 Track Order" as U4
+usecase "UC05 Cancel or Edit Order" as U5
+usecase "UC06 Pay for Order" as U6
+usecase "UC07 Confirm/Reject Order" as U7
+usecase "UC08 Prepare Order" as U8
+usecase "UC10 Deliver Order" as U10
+usecase "UC12 Handle Complaint" as U12
+}
+C -- U3
+C -- U4
+C -- U5
+C -- U6
+K -- U7
+K -- U8
+S -- U10
+C -- U12 : submits complaint
+U12 -- O : handles complaint
+@enduml
+

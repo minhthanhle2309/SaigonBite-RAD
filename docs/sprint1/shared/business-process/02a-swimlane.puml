@@ -1,0 +1,66 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Swimlane Activity Diagram 1 of 2\nUC03 / UC05 / UC06 / UC07 / UC08\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+|Customer|
+start
+repeat
+:Chọn hoặc sửa hub, món, địa chỉ;
+|System|
+if (Hub và giỏ phù hợp?) then (Có)
+:Tính tổng tiền;
+|Customer|
+:Chọn phương thức và xác nhận;
+|System|
+:Kiểm tra điều kiện đặt đơn;
+else (Không)
+|System|
+:Gợi ý hub khác hoặc sửa giỏ;
+endif
+backward :Thông báo lý do chưa thể đặt;
+repeat while (Đơn chưa hợp lệ?) is (Yes) not (No)
+:Tạo Pending;
+|Customer|
+if (Muốn hủy đơn?) then (Yes)
+:Gửi yêu cầu hủy;
+|System|
+if (Yêu cầu hủy hợp lệ?) then (Yes)
+:Lưu Cancelled;
+stop
+else (No)
+:Thông báo không thể hủy;
+endif
+else (No)
+endif
+|Kitchen Staff|
+if (Có thể phục vụ?) then (No)
+:Nhập lý do từ chối;
+|System|
+:Lưu Rejected;
+stop
+else (Yes)
+endif
+|Kitchen Staff|
+:Yêu cầu xác nhận;
+|System|
+:Lưu Confirmed;
+|Kitchen Staff|
+
+:Bắt đầu chuẩn bị;
+|System|
+:Lưu Preparing;
+|Kitchen Staff|
+:Báo món sẵn sàng;
+|System|
+:Lưu Ready, chuyển sang phần 2;
+stop
+@enduml
+
