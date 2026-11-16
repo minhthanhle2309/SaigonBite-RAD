@@ -1,7 +1,8 @@
 # UC13 — Design Classes, CRC Cards, and CRUD Verification
 
 **Author:** Võ Tấn Tài — 524H0126
-**Status:** Proposed design aligned with [UC13 specification](UC13.md). Decisions labelled **To Confirm** are not approved business rules.
+**Status:** Proposed design aligned with [UC13 specification](UC13.md). The official Case Study and Final Project Requirements confirm the Admin/Hub management scope, while decisions labelled **To Confirm** are not approved business rules.
+**AI use:** AI-assisted draft; student review is required before submission. See the Team Workbook AI Usage Log.
 
 ## Design classes
 
@@ -51,3 +52,7 @@ The workbook's CRUD Check has a candidate Hub row and reports a **Gap** for Dele
 - UC13 specification, Activity, SSD and class operations use the same four verbs: Create, Read, Update, Delete (represented by `removeHub` pending policy).
 - All write paths validate authorization and input; Delete also evaluates confirmed dependencies.
 - No class computes overload, reroutes customer orders or changes `Order`; those behaviours require separate scope confirmation.
+
+## Sprint 1 report template design evidence
+
+The [OOD sequence diagram](diagrams/13-ood-sequence.puml) traces the authorized CRUD paths through the View, Controller, policies, Hub and Repository. It distinguishes validation, missing record, conflict, blocked removal and write errors. The [final integrated design class diagram](diagrams/13-final-design-class.puml) refines this class inventory with `HubOperationResult` so those outcomes have an explicit interface. The extra result type is a proposed design value object, not an approved business entity. Both sources have adjacent PNGs. The [Hub record state machine](diagrams/13-hub-state.puml) links the UC13 postconditions to recorded, archived or removed outcomes; the latter two are conditional on a policy decision.

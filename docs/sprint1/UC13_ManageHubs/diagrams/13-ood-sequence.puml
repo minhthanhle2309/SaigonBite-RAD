@@ -1,0 +1,71 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+title UC13 - OOD Sequence Diagram (Proposed)\nVõ Tấn Tài - 524H0126
+
+actor Admin
+boundary HubManagementView as View
+control HubManagementController as Controller
+entity HubAccessPolicy as Access
+entity HubRemovalPolicy as Removal
+entity Hub as Hub
+database HubRepository as Repository
+
+Admin -> View : select operation and submit input
+View -> Controller : operation(actor, input or hubId)
+Controller -> Access : can(actor, operation, hubId?)
+Access --> Controller : authorized?
+alt unauthorized
+  Controller --> View : access denied
+  View --> Admin : showError()
+else authorized
+  alt Create
+    Controller -> Hub : create(id, details, capacity)
+    Controller -> Hub : validate()
+    Hub --> Controller : validation result
+    alt valid
+      Controller -> Repository : insert(hub)
+      Repository --> Controller : created or duplicate/write failure
+    else invalid
+      Controller --> View : invalid input
+    end
+  else Read
+    Controller -> Repository : findById(hubId)
+    Repository --> Controller : hub or not found
+  else Update
+    Controller -> Repository : findById(hubId)
+    Repository --> Controller : hub or not found
+    opt hub found
+      Controller -> Hub : revise(changes)
+      Controller -> Hub : validate()
+      Hub --> Controller : validation result
+      opt valid
+        Controller -> Repository : saveIfVersion(hub, expectedVersion)
+        Repository --> Controller : updated or conflict/write failure
+      end
+    end
+  else Delete or archive
+    Controller -> Repository : findById(hubId)
+    Repository --> Controller : hub or not found
+    opt hub found
+      Controller -> Removal : assess(hub)
+      Removal --> Controller : allowed outcome or blocked
+      opt permitted by confirmed policy
+        Controller -> Repository : removeAccordingToPolicy(hub, outcome)
+        Repository --> Controller : removal outcome or write failure
+      end
+    end
+  end
+  Controller --> View : operation result / explicit error
+  View --> Admin : showHub(), showRemovalOutcome() or showError()
+end
+
+note over Removal, Repository
+  Removal mode, permission matrix, capacity validation
+  and optimistic version scheme are To Confirm.
+end note
+footer AI-assisted draft; student review required before submission
+@enduml

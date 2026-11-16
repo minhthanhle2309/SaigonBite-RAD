@@ -1,0 +1,80 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam classBackgroundColor #EAF4F8
+skinparam linetype ortho
+title UC13 - Final Integrated Design Class Diagram (Proposed)\nVõ Tấn Tài - 524H0126
+
+package "View" {
+  class HubManagementView <<boundary>> {
+    - selectedHubId: HubId?
+    + submitOperation(operation, input): void
+    + showResult(result: HubOperationResult): void
+  }
+}
+package "Controller" {
+  class HubManagementController <<controller>> {
+    - accessPolicy: HubAccessPolicy
+    - removalPolicy: HubRemovalPolicy
+    - repository: HubRepository
+    + listHubs(actor, filter): HubOperationResult
+    + getHub(actor, hubId): HubOperationResult
+    + createHub(actor, input): HubOperationResult
+    + updateHub(actor, hubId, changes, expectedVersion): HubOperationResult
+    + removeHub(actor, hubId): HubOperationResult
+  }
+}
+package "Domain" {
+  class Hub <<entity>> {
+    - id: HubId
+    - details: HubDetails
+    - capacitySetting: CapacitySetting
+    - version: Version
+    + validate(): ValidationResult
+    + revise(changes): Hub
+    + snapshot(): HubSnapshot
+  }
+  class HubAccessPolicy <<policy>> {
+    + can(actor, operation, hubId): Boolean
+  }
+  class HubRemovalPolicy <<policy>> {
+    + assess(hub): RemovalDecision
+  }
+  class HubOperationResult <<value>> {
+    + status: OperationStatus
+    + snapshot: HubSnapshot?
+    + errorCode: ErrorCode?
+  }
+}
+package "Data Access" {
+  class HubRepository <<repository>> {
+    + list(filter): HubList
+    + findById(hubId): Hub?
+    + insert(hub): WriteResult
+    + saveIfVersion(hub, expectedVersion): WriteResult
+    + removeAccordingToPolicy(hub, decision): WriteResult
+  }
+}
+
+HubManagementView --> HubManagementController : calls
+HubManagementView --> HubOperationResult : displays
+HubManagementController --> HubAccessPolicy : checks
+HubManagementController --> HubRemovalPolicy : assesses
+HubManagementController --> HubRepository : reads / writes
+HubManagementController --> Hub : validates / revises
+HubManagementController --> HubOperationResult : returns
+HubRepository --> Hub : persists
+
+note bottom of HubRemovalPolicy
+  RemovalDecision has no fixed archive/delete branch
+  until the client confirms retention and dependencies.
+end note
+note bottom of HubOperationResult
+  Separates success, invalid, denied, conflict,
+  not found, blocked removal and write failure.
+end note
+footer AI-assisted draft; student review required before submission
+@enduml

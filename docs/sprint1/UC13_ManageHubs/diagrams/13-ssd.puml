@@ -49,4 +49,5 @@ note over Admin,System
   Proposed / To Confirm: actor permissions, capacity validation,
   version strategy, and delete versus archive policy.
 end note
+footer AI-assisted draft; student review required before submission
 @enduml

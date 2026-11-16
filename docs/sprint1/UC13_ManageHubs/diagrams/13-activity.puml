@@ -73,4 +73,5 @@ note right
   A failed write preserves stored data.
 end note
 stop
+footer AI-assisted draft; student review required before submission
 @enduml

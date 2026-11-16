@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam stateBackgroundColor #EAF4F8
+title UC13 - Hub Record State Machine (Proposed)\nVõ Tấn Tài - 524H0126
+
+state "Recorded hub" as Recorded
+state "Archived hub" as Archived
+state "Removed hub" as Removed
+state RemovalDecision <<choice>>
+
+[*] -down-> Recorded : createHub [authorized and valid]
+Recorded : getHub [authorized] / return details, no mutation
+Recorded : updateHub [authorized, valid, current] / record changes
+Recorded : removeHub [blocked] / preserve record
+Recorded -down-> RemovalDecision : removeHub [authorized, permitted]
+RemovalDecision -left-> Archived : [archive policy permits]
+RemovalDecision -right-> Removed : [hard-delete policy permits]
+Archived -down-> [*]
+Removed -down-> [*]
+
+note right of Recorded
+  The policy branches are alternatives, not
+  confirmed implementation behaviour.
+  Delete versus archive, dependencies and
+  operation permissions are To Confirm.
+end note
+note bottom of RemovalDecision
+  Read leaves the record unchanged. Invalid,
+  conflicting or failed writes also preserve
+  the prior record (error paths in UC13).
+  Capacity units and limits are To Confirm.
+end note
+footer AI-assisted draft; student review required before submission
+@enduml
