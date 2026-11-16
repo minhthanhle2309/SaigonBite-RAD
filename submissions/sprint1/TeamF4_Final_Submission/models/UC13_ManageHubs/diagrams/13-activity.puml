@@ -1,0 +1,77 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+title UC13 - Manage Hubs and Kitchen Capacity - Activity\nVõ Tấn Tài - 524H0126
+
+|Admin (proposed)|
+start
+:Open hub management;
+|System|
+if (Authorized to view?) then (yes)
+  :Display permitted hub list;
+else (no)
+  :Reject access;
+  stop
+endif
+|Admin (proposed)|
+:Select operation;
+|System|
+switch (Operation)
+case (Create)
+  |Admin (proposed)|
+  :Enter hub details and capacity setting;
+  |System|
+  :Check create permission and input;
+  if (Valid and permitted?) then (yes)
+    :Create hub;
+    :Return recorded hub;
+  else (no)
+    :Return validation or access error;
+  endif
+case (Read)
+  |Admin (proposed)|
+  :Select hub;
+  |System|
+  :Check read permission and existence;
+  if (Found and permitted?) then (yes)
+    :Display hub and capacity;
+  else (no)
+    :Return not found or access error;
+  endif
+case (Update)
+  |Admin (proposed)|
+  :Select hub and submit edits;
+  |System|
+  :Check update permission, existence,
+  input and concurrent changes;
+  if (Valid and permitted?) then (yes)
+    :Record update;
+    :Return updated hub;
+  else (no)
+    :Return validation, access or conflict error;
+  endif
+case (Delete)
+  |Admin (proposed)|
+  :Select hub for removal;
+  |System|
+  :Check delete permission, existence,
+  dependencies and confirmed policy;
+  if (Removal allowed?) then (yes)
+    :Apply confirmed delete or archive policy;
+    :Return outcome;
+  else (no)
+    :Return block or access error;
+  endif
+endswitch
+note right
+  Capacity units, thresholds and removal policy
+  are Proposed / To Confirm.
+  A failed write preserves stored data.
+end note
+stop
+footer AI-assisted draft; student review required before submission
+@enduml

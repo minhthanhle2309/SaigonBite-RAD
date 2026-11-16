@@ -1,0 +1,56 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+title UC16 - Produce Management Reports - Activity\nVõ Tấn Tài - 524H0126
+
+|Manager|
+start
+:Open management reporting;
+|System|
+if (Authorized to access reporting?) then (yes)
+  :Show permitted report options and filters;
+else (no)
+  :Return access denied;
+  stop
+endif
+|Manager|
+:Select report type, period and scope;
+|System|
+if (Valid filters and authorized scope?) then (yes)
+  :Retrieve eligible source records;
+else (no)
+  :Return validation or access error;
+  stop
+endif
+if (Retrieval succeeds?) then (yes)
+  if (Eligible records found?) then (yes)
+    :Aggregate using confirmed KPI definitions;
+    if (Aggregation succeeds?) then (yes)
+      if (Source data complete?) then (yes)
+        :Display report with type, period,
+        scope and data status;
+      else (no)
+        :Mark incomplete or unavailable
+        under confirmed data-quality policy;
+      endif
+    else (no)
+      :Return processing failure;
+    endif
+  else (no)
+    :Display no-data result and filters;
+  endif
+else (no)
+  :Return retrieval failure;
+endif
+note right
+  Report metrics, period, scope, snapshot and
+  data-quality policies: Proposed / To Confirm.
+  No operational source record is changed.
+end note
+stop
+footer AI-assisted draft; student review required before submission
+@enduml

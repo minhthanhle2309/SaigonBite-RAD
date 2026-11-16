@@ -1,0 +1,29 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Order State Machine\nUC03 / UC05 / UC07 / UC08 / UC10\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+!pragma layout smetana
+[*] --> Pending
+note top of Pending : Khởi tạo sau checkout hợp lệ (UC03)
+Pending --> Confirmed : confirmOrder\n[hub authorized]
+Pending --> Rejected : rejectOrder\n[hub authorized and reason present]
+Pending --> Cancelled : cancelOrder\n[customer owns order and eligible]
+Confirmed --> Preparing : startPreparation
+Preparing --> Ready : markReady
+Ready --> OutForDelivery : confirmPickup\n[assigned shipper]
+OutForDelivery --> Delivered : confirmDelivery\n[assigned shipper and payment input valid]\n/ record COD if applicable
+OutForDelivery --> Failed : reportFailure\n[assigned shipper and reason present]
+Rejected --> [*]
+Cancelled --> [*]
+Delivered --> [*]
+Failed --> [*]
+@enduml
+

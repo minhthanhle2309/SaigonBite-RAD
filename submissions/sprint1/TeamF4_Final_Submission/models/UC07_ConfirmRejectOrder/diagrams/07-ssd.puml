@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Confirm Reject Order System Sequence Diagram\nUC07\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+actor "Kitchen Staff" as A
+participant "OFDH System" as S
+A -> S : openOrder(id)
+alt authorized and Pending
+S --> A : order details
+alt fulfilment possible
+A -> S : confirmOrder(id)
+alt hub authorized, Pending and save succeeds
+S --> A : Confirmed
+else validation or save fails
+S --> A : error
+end
+else cannot fulfil
+A -> S : rejectOrder(id, reason)
+alt hub authorized, Pending, reason present and save succeeds
+S --> A : Rejected
+else validation or save fails
+S --> A : error
+end
+end
+else invalid order
+S --> A : error
+end
+@enduml
+

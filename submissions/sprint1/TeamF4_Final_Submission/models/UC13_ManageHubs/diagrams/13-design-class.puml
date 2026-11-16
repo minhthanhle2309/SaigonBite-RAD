@@ -1,0 +1,73 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam classBackgroundColor #EAF4F8
+title UC13 - Design Class Diagram\nVõ Tấn Tài - 524H0126
+
+class HubManagementView <<boundary>> {
+  - selectedHubId: HubId?
+  - formValues: HubInput?
+  + showHubList(items): void
+  + showHub(hub): void
+  + collectHubInput(): HubInput
+  + showError(message): void
+  + showRemovalOutcome(outcome): void
+}
+class HubManagementController <<controller>> {
+  - accessPolicy: HubAccessPolicy
+  - repository: HubRepository
+  - removalPolicy: HubRemovalPolicy
+  + listHubs(actor, filter): Result
+  + getHub(actor, hubId): Result
+  + createHub(actor, input): Result
+  + updateHub(actor, hubId, changes, expectedVersion): Result
+  + removeHub(actor, hubId): Result
+}
+class Hub <<entity>> {
+  - id: HubId
+  - details: HubDetails
+  - capacitySetting: CapacitySetting
+  - version: Version
+  + create(id, details, capacity): Hub
+  + revise(changes): Hub
+  + validate(): ValidationResult
+  + snapshot(): HubSnapshot
+}
+class HubAccessPolicy <<domain policy>> {
+  - permissionRules: PermissionRules
+  + can(actor, operation, hubId): Boolean
+}
+class HubRemovalPolicy <<domain policy>> {
+  - rules: RemovalRules
+  + assess(hub): RemovalDecision
+  + apply(hub): RemovalOutcome
+}
+class HubRepository <<data access>> {
+  - dataSource: DataSource
+  + list(filter): HubList
+  + findById(hubId): Hub?
+  + insert(hub): Result
+  + saveIfVersion(hub, expectedVersion): Result
+  + removeAccordingToPolicy(hub, outcome): Result
+}
+
+HubManagementView --> HubManagementController : sends system events
+HubManagementController --> HubAccessPolicy : authorizes
+HubManagementController --> HubRemovalPolicy : assesses removal
+HubManagementController --> HubRepository : reads / writes
+HubManagementController --> Hub : creates / revises
+HubRepository --> Hub : persists
+
+note bottom of Hub
+  Capacity units, bounds, and version scheme:
+  Proposed / To Confirm
+end note
+note bottom of HubRemovalPolicy
+  Delete versus archive and dependencies:
+  To Confirm
+end note
+footer AI-assisted draft; student review required before submission
+@enduml

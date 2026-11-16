@@ -1,0 +1,36 @@
+@startuml
+hide footbox
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Object Sequence Diagram Open Order\nUC07\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+actor "Kitchen Staff" as A
+boundary ":KitchenOrderView" as V
+control ":OrderDecisionController" as C
+database ":OrderRepository" as R
+A -> V : openOrder(id)
+V -> C : openOrder(id)
+C -> R : findForHub(id, currentScope)
+alt order found in hub scope
+R --> C : order
+alt Order is Pending
+C --> V : OrderDetails
+V --> A : show details
+else Order is not Pending
+C --> V : error
+V --> A : show error
+end
+else order missing or out of scope
+R --> C : none
+C --> V : error
+V --> A : show error
+end
+@enduml
+

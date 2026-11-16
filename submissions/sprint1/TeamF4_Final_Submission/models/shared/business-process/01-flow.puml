@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Business Process Flowchart\nUC03 / UC05 / UC06 / UC07 / UC08 / UC10 / UC12\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+start
+repeat
+  :Chọn hoặc sửa hub, món, địa chỉ;
+  if (Hub phục vụ được?) then (Yes)
+    :Xem tổng tiền và chọn phương thức;
+    :Kiểm tra điều kiện đặt đơn;
+  else (No)
+    :Gợi ý hub khác hoặc chỉnh giỏ;
+  endif
+backward :Hiển thị lỗi; sửa thông tin hoặc thử lại;
+repeat while (Đơn chưa hợp lệ?) is (Yes) not (No)
+:Tạo Order ở Pending;
+if (Yêu cầu hủy hợp lệ theo UC05?) then (Yes)
+  :Cancelled;
+  stop
+else (No)
+endif
+if (Kitchen Staff xác nhận?) then (Yes)
+  :Confirmed → Preparing → Ready;
+else (No)
+  :Rejected, ghi lý do;
+  stop
+endif
+:Pickup → OutForDelivery;
+if (Hoàn tất giao hàng?) then (Yes)
+  :Delivered, ghi COD nếu áp dụng;
+else (No)
+  :Failed, ghi lý do;
+endif
+if (Customer gửi khiếu nại?) then (Yes)
+  :Office Staff xử lý theo UC12;
+else (No)
+endif
+stop
+@enduml

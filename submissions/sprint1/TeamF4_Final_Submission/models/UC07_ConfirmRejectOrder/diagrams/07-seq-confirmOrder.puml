@@ -1,0 +1,50 @@
+@startuml
+hide footbox
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Object Sequence Diagram Confirm Order\nUC07\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+actor "Kitchen Staff" as A
+boundary ":KitchenOrderView" as V
+control ":OrderDecisionController" as C
+entity "order:Order" as O
+database ":OrderRepository" as R
+note over A,V : fulfilment possible
+A -> V : confirmOrder(id)
+V -> C : confirmOrder(id)
+C -> R : findForHub(id, currentScope)
+alt order found in current scope
+R --> C : order
+note over C,O : expectedVersion = order.version
+C -> O : confirm()
+alt Order is Pending
+O --> C : valid
+C -> R : save(order, expectedVersion)
+alt save succeeds
+R --> C : saved
+C --> V : Confirmed
+V --> A : show Confirmed
+else conflict or storage error
+R --> C : conflict or storage error
+C --> V : error
+V --> A : show error and reload guidance
+end
+else domain validation error
+O --> C : invalid
+C --> V : error
+V --> A : show error
+end
+else order missing or out of scope
+R --> C : none
+C --> V : error
+V --> A : show error
+end
+@enduml
+

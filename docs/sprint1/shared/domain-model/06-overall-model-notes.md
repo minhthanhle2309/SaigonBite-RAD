@@ -3,14 +3,14 @@
 **Author:** Võ Tấn Tài — 524H0126
 **AI use:** AI-assisted draft; student review is required before submission. See the Team Workbook AI Usage Log.
 
-**Status:** Proposed integration model for UC03, UC04, UC07, UC10, UC13 and UC16. This does not replace the UC07/UC10 diagrams by Lê Đỗ Minh Thành. The official [Case Study, Final Project Requirements and Report Template](https://drive.google.com/drive/folders/14cJnJ9_AhfFeWIxvzuRefNueToF5RyNF) were supplied during the 03 November 2026 update review. UC03/UC04 drafts were discovered on `origin/feature/khang-uc03-uc04`; they are not merged into Tài's branch.
+**Status:** Proposed integration model for UC03, UC04, UC07, UC10, UC13 and UC16. This does not replace the UC07/UC10 diagrams by Lê Đỗ Minh Thành. The official [Case Study, Final Project Requirements and Report Template](https://drive.google.com/drive/folders/14cJnJ9_AhfFeWIxvzuRefNueToF5RyNF) were supplied during the 03 November 2026 update review. UC03/UC04 files were copied unchanged from `origin/feature/khang-uc03-uc04` into Tài's branch for integration review; Khang's branch itself was not changed.
 
 ## Evidence and coverage
 
 | Use case | Evidence in repository | Model contribution | Status |
 |---|---|---|---|
-| UC03 Place Order | Khang's draft on a separate remote branch specifies COD as `PENDING_CONFIRMATION`, online as `AWAITING_PAYMENT`, plus order/address/price snapshots. The current branch still has only a placeholder. | Customer, Order, OrderLine, MenuItem, Hub; proposed payment status and online waiting state. | Cross-branch draft; not team reconciled. |
-| UC04 Track Order | Khang's draft on a separate remote branch specifies ownership-scoped read, milestones and timestamps. The current branch still has only a placeholder. | Reads Order.status and proposed OrderMilestone; no state change. | Cross-branch draft; not team reconciled. |
+| UC03 Place Order | Khang's copied draft specifies COD as `PENDING_CONFIRMATION`, online as `AWAITING_PAYMENT`, plus order/address/price snapshots. | Customer, Order, OrderLine, MenuItem, Hub; proposed payment status and online waiting state. | Source integrated; vocabulary not team reconciled. |
+| UC04 Track Order | Khang's copied draft specifies ownership-scoped read, milestones and timestamps. | Reads Order.status and proposed OrderMilestone; no state change. | Source integrated; vocabulary not team reconciled. |
 | UC07 Confirm/Reject Order | UC07 description and Thành's domain/state diagrams. | Pending to Confirmed or Rejected; rejectionReason. | Team draft; role/assumptions require confirmation. |
 | UC10 Deliver Order | UC10 description and Thành's domain/state diagrams. | Ready to OutForDelivery, then Delivered or Failed; Shipper, cashCollected, failureReason. | Team draft; COD and assignment rules require confirmation. |
 | UC13 Manage Hubs and Kitchen Capacity | Official Case Study and Final Project Requirements identify Admin maintenance and limited hub capacity; Tài's UC13 draft. | Hub.capacitySetting; no direct Order state change. | UC13 is a source-backed candidate; UC13/UC14 team ownership conflict and capacity details remain open. |

@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam activityBackgroundColor #EAF4F8
+skinparam classBackgroundColor #EAF4F8
+skinparam stateBackgroundColor #EAF4F8
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+skinparam dpi 180
+title Domain Class Model\nUC07 / UC10\n<size:12>Lê Đỗ Minh Thành – 524H0030</size>
+class Order {
+id
+status
+paymentMethod
+totalDue
+rejectionReason
+failureReason
+cashCollected
+}
+class OrderLine {
+quantity
+unitPrice
+}
+class Hub {
+hubId
+}
+class Customer {
+customerId
+}
+class Shipper {
+shipperId
+}
+class MenuItem {
+menuItemId
+}
+Customer "1" -- "0..*" Order : places
+Hub "1" -- "0..*" Order : fulfils
+Shipper "0..1" -- "0..*" Order : current assignment
+Order "1" *-- "1..*" OrderLine
+OrderLine "0..*" -- "1" MenuItem : refers to
+@enduml
+
