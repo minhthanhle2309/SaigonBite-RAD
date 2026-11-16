@@ -7,7 +7,12 @@ skinparam ArrowColor #235573
 skinparam stateBackgroundColor #EAF4F8
 title SaigonBite - Overall Order State Machine (Proposed)\nVõ Tấn Tài - 524H0126
 
-[*] --> Pending : placeOrder / UC03 (proposed)
+state PaymentChoice <<choice>>
+[*] --> PaymentChoice : placeOrder / UC03 (proposed)
+PaymentChoice --> Pending : [COD]
+PaymentChoice --> AwaitingPayment : [online]
+AwaitingPayment --> Pending : verifiedPayment / supporting flow (proposed)
+AwaitingPayment --> Cancelled : expire / supporting flow (proposed)
 Pending --> Confirmed : confirmOrder / UC07\n[authorized Kitchen Staff]
 Pending --> Rejected : rejectOrder / UC07\n[authorized Kitchen Staff and reason]
 Pending --> Cancelled : cancelOrder / UC05\n[eligibility To Confirm]
@@ -22,8 +27,14 @@ Delivered --> [*]
 Failed --> [*]
 
 note right of Pending
-  UC03 specification is not yet in the repository.
-  Creation in Pending follows the existing team flow.
+  Pending corresponds provisionally to Khang's
+  PENDING_CONFIRMATION. Khang's UC03/UC04 drafts
+  are on a separate branch, not integrated here.
+end note
+note right of AwaitingPayment
+  Proposed from Khang's UC03 draft.
+  Payment verification and slot expiry policy
+  remain outside the six-UC baseline.
 end note
 note right of Ready
   UC08 is outside this six-UC review but bridges
@@ -32,7 +43,10 @@ end note
 note bottom of OutForDelivery
   UC04 tracks Order without changing state.
   UC13 changes Hub data; UC16 reads report data.
-  Exact state policy and cancellation eligibility
-  remain To Confirm against the Case Study.
+  Khang's ACCEPTED / READY_FOR_PICKUP /
+  DELIVERY_FAILED names differ from Thành's
+  Confirmed / Ready / Failed. Rejection also
+  differs: CANCELLED versus Rejected.
+  Team/client reconciliation is required.
 end note
 @enduml

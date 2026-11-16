@@ -44,7 +44,7 @@
 | Update | Actor has Update permission; hub exists; changes are valid; record is current. | Updated hub is persisted and returned. | Unauthorized, absent, invalid, concurrent change or write failure: prior data preserved. |
 | Delete / archive | Actor has Delete permission; hub exists; confirmed retention/dependency policy permits the action. | Confirmed removal outcome is returned. | Unauthorized, absent, blocked dependency or write failure: hub preserved. **Deletion mode is To Confirm.** |
 
-The workbook's CRUD Check sheet is currently unfilled. This table verifies the **candidate UC13 design only**; it does not establish a team-wide CRUD coverage result. The requirement to manage brands/menu items remains assigned to UC14 in the available proposal and workbooks and is not silently absorbed into UC13.
+The workbook's CRUD Check has a candidate Hub row and reports a **Gap** for Delete because the removal policy is open. This table verifies the **candidate UC13 design only**; it does not establish team-wide CRUD coverage. The proposal assigns brand/menu management to UC14, while the current workbook flags its ownership conflict with UC13. UC14 is not silently absorbed into UC13.
 
 ## Consistency checks
 

@@ -12,21 +12,20 @@ participant "SaigonBite System" as System
 Manager -> System: listAvailableReports()
 alt authorized
   System --> Manager: permittedReportTypesAndFilters
+  Manager -> System: produceReport(reportType, period, scope)
+  alt invalid filters or unauthorized scope
+    System --> Manager: validationError / accessDenied
+  else retrieval or aggregation failure
+    System --> Manager: reportUnavailable(reason)
+  else no eligible records
+    System --> Manager: noData(reportType, period, scope)
+  else incomplete source data
+    System --> Manager: incompleteOrUnavailable(dataStatus)
+  else valid and complete result
+    System --> Manager: report(values, type, period, scope, dataStatus)
+  end
 else unauthorized
   System --> Manager: accessDenied
-end
-
-Manager -> System: produceReport(reportType, period, scope)
-alt invalid filters or unauthorized scope
-  System --> Manager: validationError / accessDenied
-else retrieval or aggregation failure
-  System --> Manager: reportUnavailable(reason)
-else no eligible records
-  System --> Manager: noData(reportType, period, scope)
-else incomplete source data
-  System --> Manager: incompleteOrUnavailable(dataStatus)
-else valid and complete result
-  System --> Manager: report(values, type, period, scope, dataStatus)
 end
 
 note over Manager,System

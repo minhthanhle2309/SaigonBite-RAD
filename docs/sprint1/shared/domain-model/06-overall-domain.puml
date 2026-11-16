@@ -28,16 +28,25 @@ class MenuItem {
 class Order {
   id
   status
+  paymentStatus [proposed from UC03/UC04]
   paymentMethod
   totalDue
+  deliveryAddressSnapshot [proposed]
+  clientRequestId [proposed]
   rejectionReason [optional]
   failureReason [optional]
   cashCollected [optional]
   placedAt [proposed]
+  updatedAt [proposed]
 }
 class OrderLine {
   quantity
   unitPrice
+  nameSnapshot [proposed]
+}
+class OrderMilestone <<proposed>> {
+  status
+  occurredAt
 }
 class Shipper {
   shipperId
@@ -53,8 +62,9 @@ Customer "1" -- "0..*" Order : places
 Hub "1" -- "0..*" Order : fulfils
 Shipper "0..1" -- "0..*" Order : current assignment
 Order "1" *-- "1..*" OrderLine : contains
+Order "1" *-- "0..*" OrderMilestone : records (proposed)
 OrderLine "0..*" -- "1" MenuItem : refers to
-Brand "1" -- "0..*" MenuItem : groups (proposed)
+Brand "1" -right- "0..*" MenuItem
 ManagementReport ..> Order
 ManagementReport ..> Hub
 
@@ -70,9 +80,9 @@ end note
 note as N1
   Existing UC07/UC10 model supports Order, OrderLine,
   Customer, Hub, Shipper, MenuItem and core associations.
-  UC03/UC04 files are missing; Brand and catalogue
-  association, extra attributes, and report derivation
-  are Proposed pending source requirements.
+  UC03/UC04 drafts are on Khang's separate branch.
+  Their added attributes and milestones are Proposed;
+  state vocabulary still needs team reconciliation.
 end note
 N1 .. Order
 @enduml
