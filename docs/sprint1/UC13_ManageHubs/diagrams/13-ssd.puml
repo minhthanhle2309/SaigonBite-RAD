@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor #FFFFFF
+skinparam defaultFontName Arial
+skinparam defaultFontSize 15
+skinparam shadowing false
+skinparam ArrowColor #235573
+skinparam sequenceParticipantBackgroundColor #EAF4F8
+title UC13 - Manage Hubs and Kitchen Capacity - SSD\nVõ Tấn Tài - 524H0126
+actor "Admin\n(proposed)" as Admin
+participant "SaigonBite System" as System
+
+Admin -> System: listHubs(filter)
+alt authorized
+  System --> Admin: permittedHubSummaries
+else unauthorized
+  System --> Admin: accessDenied
+end
+
+alt Create
+  Admin -> System: createHub(hubDetails, capacitySetting)
+  alt valid and permitted
+    System --> Admin: createdHub(id, details, capacitySetting)
+  else invalid / duplicate / unauthorized / write failure
+    System --> Admin: error(reason); no change
+  end
+else Read
+  Admin -> System: getHub(hubId)
+  alt found and permitted
+    System --> Admin: hubDetails, capacitySetting
+  else absent or unauthorized
+    System --> Admin: notFound / accessDenied
+  end
+else Update
+  Admin -> System: updateHub(hubId, changes, expectedVersion)
+  alt valid, current and permitted
+    System --> Admin: updatedHub
+  else invalid / absent / conflict / unauthorized / write failure
+    System --> Admin: error(reason); no change
+  end
+else Delete
+  Admin -> System: removeHub(hubId)
+  alt confirmed policy permits removal
+    System --> Admin: removalOutcome
+  else blocked / absent / unauthorized / write failure
+    System --> Admin: error(reason); no change
+  end
+end
+
+note over Admin,System
+  Proposed / To Confirm: actor permissions, capacity validation,
+  version strategy, and delete versus archive policy.
+end note
+@enduml
