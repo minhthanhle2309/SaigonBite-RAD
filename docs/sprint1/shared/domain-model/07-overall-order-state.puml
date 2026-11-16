@@ -49,4 +49,5 @@ note bottom of OutForDelivery
   differs: CANCELLED versus Rejected.
   Team/client reconciliation is required.
 end note
+footer AI-assisted draft; student review required before submission
 @enduml

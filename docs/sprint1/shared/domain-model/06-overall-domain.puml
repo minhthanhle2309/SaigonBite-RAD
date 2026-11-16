@@ -11,14 +11,24 @@ title SaigonBite - Overall Domain Class Model (Proposed)\nUC03 / UC04 / UC07 / U
 class Customer {
   customerId
 }
+class LocalCustomer {
+  mobileNumber
+}
+class TouristCustomer {
+  passportDetails
+  emailAddress
+}
 class Hub {
   hubId
   name [proposed]
-  capacitySetting [proposed]
+  capacitySetting [unit / threshold To Confirm]
 }
-class Brand <<proposed>> {
+class Brand {
   brandId
-  name
+  name [proposed]
+}
+class Voucher {
+  voucherId [proposed]
 }
 class MenuItem {
   menuItemId
@@ -59,10 +69,14 @@ class ManagementReport <<derived, proposed>> {
 }
 
 Customer "1" -- "0..*" Order : places
+Customer <|-- LocalCustomer
+Customer <|-- TouristCustomer
 Hub "1" -- "0..*" Order : fulfils
+Hub "0..*" -- "1..*" Brand : works with (Hub count proposed)
 Shipper "0..1" -- "0..*" Order : current assignment
 Order "1" *-- "1..*" OrderLine : contains
 Order "1" *-- "0..*" OrderMilestone : records (proposed)
+Voucher "0..1" -- "0..*" Order : applied to (reuse proposed)
 OrderLine "0..*" -- "1" MenuItem : refers to
 Brand "1" -right- "0..*" MenuItem
 ManagementReport ..> Order
@@ -78,11 +92,13 @@ note bottom of ManagementReport
   KPI definitions and period To Confirm.
 end note
 note as N1
-  Existing UC07/UC10 model supports Order, OrderLine,
-  Customer, Hub, Shipper, MenuItem and core associations.
+  The official Case Study confirms customer types, limited
+  hub capacity, hub-brand work and at most one voucher/order.
+  Existing UC07/UC10 model supports the core Order links.
   UC03/UC04 drafts are on Khang's separate branch.
   Their added attributes and milestones are Proposed;
   state vocabulary still needs team reconciliation.
 end note
 N1 .. Order
+footer AI-assisted draft; student review required before submission
 @enduml
